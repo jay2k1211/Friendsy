@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Friendsy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
+      color: #fff;
+      min-height: 100vh;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.4s, color 0.4s;
+    }
+    body.light-mode {
+      background: #f5f5f5;
+      color: #111;
+    }
+    .header {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+    .logo {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 18px;
+      color: #ffeb3b;
+    }
+    .icons {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      position: relative;
+    }
+    .icons span, .icons button {
+      cursor: pointer;
+      font-size: 14px;
+      background: none;
+      border: none;
+      color: white;
+      position: relative;
+      user-select: none;
+    }
+    .search-bar {
+      background: #fff;
+      padding: 5px;
+      border-radius: 10px;
+      color: #000;
+      font-size: 14px;
+    }
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -8px;
+      background: #ff3b3b;
+      color: white;
+      font-size: 10px;
+      padding: 2px 5px;
+      border-radius: 50%;
+      font-weight: bold;
+      user-select: none;
+    }
+    .container {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+      gap: 20px;
+    }
+    .profile, .friends-list, .main-feed, .post-area, .post {
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 15px;
+      padding: 15px;
+    }
+    body.light-mode .profile,
+    body.light-mode .friends-list,
+    body.light-mode .main-feed,
+    body.light-mode .post,
+    body.light-mode .post-area {
+      background: rgba(255, 255, 255, 0.8);
+      color: #111;
+    }
+    .profile {
+      width: 260px;
+    }
+    .profile img {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 4px solid #fff;
+      object-fit: cover;
+      display: block;
+      margin: 0 auto 10px;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-left: 5px;
+    }
+    .online { background-color: limegreen; }
+    .offline { background-color: darkgray; }
+    .profile h3, .profile p { text-align: center; }
+    .edit-btn, .edit-panel button {
+      background: #673ab7;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      user-select: none;
+    }
+    .edit-panel {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .main-feed {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .post-area textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border-radius: 10px;
+      resize: none;
+    }
+    .post-area button {
+      margin-top: 10px;
+      background-color: #ff4081;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      user-select: none;
+    }
+    #emojiPicker span {
+      cursor: pointer;
+      font-size: 20px;
+      margin-right: 5px;
+      user-select: none;
+    }
+    .post img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+    .post .post-time {
+      font-size: 11px;
+      opacity: 0.6;
+      margin-bottom: 8px;
+      user-select: none;
+    }
+    .reactions span {
+      margin-right: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      user-select: none;
+    }
+    .friends-list {
+      width: 240px;
+    }
+    .friend {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      cursor: pointer;
+      user-select: none;
+    }
+    .friend button {
+      background: #673ab7;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      padding: 3px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .comment-section input {
+      width: 100%;
+      padding: 5px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    .comment-list {
+      margin-top: 5px;
+    }
+    .comment-list p {
+      font-size: 13px;
+      margin-bottom: 5px;
+      user-select: none;
+    }
+    .comment-time {
+      font-size: 10px;
+      opacity: 0.5;
+      margin-left: 5px;
+      user-select: none;
+    }
+    /* Chat popup styles */
+    #chatBox {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      width: 300px;
+      max-height: 400px;
+      background: rgba(0,0,0,0.85);
+      border-radius: 15px;
+      color: white;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 0 15px #000;
+      z-index: 1000;
+    }
+    #chatHeader {
+      padding: 10px;
+      background: #673ab7;
+      cursor: pointer;
+      user-select: none;
+    }
+    #chatMessages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
+    #chatMessages p {
+      margin-bottom: 5px;
+      user-select: none;
+    }
+    #chatInput {
+      flex: 1;
+      border-radius: 10px;
+      border: none;
+      padding: 7px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">Friendsy</div>
+    <div class="icons">
+      <input type="text" class="search-bar" placeholder="Search friends/posts 🔍">
+      <span id="notificationBell" title="Notifications" onclick="clearNotifications()">🔔
+        <span id="notificationCount" class="notification-badge" style="display:none;">0</span>
+      </span>
+      <button onclick="logout()">Log Out</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="profile">
+      <img id="profileImg" src="profile.jpg" alt="Profile Pic">
+      <h3 id="name">Jay Dumato <span class="status-dot online"></span></h3>
+      <p id="bio">Living life retro-style 🌈</p>
+      <button class="edit-btn" onclick="toggleEdit()">Edit Profile</button>
+      <div class="edit-panel" id="editPanel">
+        <input type="text" placeholder="Name" id="editName">
+        <input type="text" placeholder="Bio" id="editBio">
+        <input type="text" placeholder="Gender" id="editGender">
+        <input type="number" placeholder="Age" id="editAge">
+        <input type="text" placeholder="Status (Single, Married...)" id="editStatus">
+        <input type="password" placeholder="Change Password">
+        <input type="file" onchange="updatePic(event)">
+        <input type="file" onchange="updateBg(event)">
+        <button onclick="toggleTheme()">Toggle Dark/Light</button>
+        <button onclick="saveProfile()">Save Profile</button>
+      </div>
+    </div>
+
+    <div class="main-feed">
+      <div class="post-area">
+        <textarea id="postText" placeholder="What's on your mind, Jay?"></textarea>
+        <input type="file" id="postImage">
+        <button onclick="postFeed()">Post</button>
+        <select id="postPrivacy" style="margin-left: 10px; border-radius: 10px; padding: 5px;">
+          <option value="public">👁️ Public</option>
+          <option value="friends">👥 Friends</option>
+          <option value="private">🔒 Only Me</option>
+        </select>
+        <div id="emojiPicker" style="margin-top: 5px;">
+          Emojis: 
+          <span onclick="addEmoji('😀')">😀</span>
+          <span onclick="addEmoji('😂')">😂</span>
+          <span onclick="addEmoji('😍')">😍</span>
+          <span onclick="addEmoji('🙌')">🙌</span>
+          <span onclick="addEmoji('💯')">💯</span>
+          <span onclick="addEmoji('🔥')">🔥</span>
+        </div>
+      </div>
+      <div id="feed"></div>
+    </div>
+
+    <div class="friends-list">
+      <h3>👥 Friends List</h3>
+      <div class="friend" onclick="openChat('Marian', event)">Marian <span class="status-dot online"></span> <button onclick="sendFriendRequest(event, 'Marian')">➕ Add Friend</button></div>
+      <div class="friend" onclick="openChat('Lou', event)">Lou <span class="status-dot offline"></span> <button onclick="sendFriendRequest(event, 'Lou')">➕ Add Friend</button></div>
+    </div>
+  </div>
+
+  <!-- Chat Popup -->
+  <div id="chatBox">
+    <div id="chatHeader">Chat</div>
+    <div id="chatMessages"></div>
+    <div style="display: flex; padding: 10px; gap: 5px;">
+      <input id="chatInput" type="text" placeholder="Type a message..." />
+      <button onclick="sendMessage()" style="background: #ff4081; border: none; border-radius: 10px; color: white; padding: 5px 10px; cursor: pointer;">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const userProfile = { name: 'Jay Dumato' };
+    const userReactions = {}; // Track per-post reaction type by user
+    const friendRequests = [];
+    const friends = ['Marian', 'Lou']; // Your current friends list
+    const messages = {}; // Store messages per friend
+    let currentChatFriend = null;
+
+    // Notifications count and queue
+    let notificationCount = 0;
+
+    // Profile edit panel toggle
+    function toggleEdit() {
+      const panel = document.getElementById("editPanel");
+      panel.style.display = panel.style.display === "flex" ? "none" : "flex";
+    }
+
+    // Dark/light mode toggle
+    function toggleTheme() {
+      document.body.classList.toggle("light-mode");
+    }
+
+    // Update profile pic
+    function updatePic(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        document.getElementById("profileImg").src = url;
+      }
+    }
+
+    // Update background
+    function updateBg(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        document.body.style.backgroundImage = `url('${url}')`;
+      }
+    }
+
+    // Save profile edits
+    function saveProfile() {
+      const name = document.getElementById("editName").value;
+      const bio = document.getElementById("editBio").value;
+      if (name) {
+        document.getElementById("name").innerHTML = name + ' <span class="status-dot online"></span>';
+        userProfile.name = name;
+      }
+      if (bio) document.getElementById("bio").textContent = bio;
+      alert("Profile Saved!");
+    }
+
+    function logout() {
+      alert("Logging out...");
+    }
+
+    // Add emoji to post textarea
+    function addEmoji(emoji) {
+      const postText = document.getElementById('postText');
+      postText.value += emoji;
+      postText.focus();
+    }
+
+    // Format date/time string
+    function formatDateTime(date) {
+      const d = new Date(date);
+      const options = { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' };
+      return d.toLocaleDateString(undefined, options);
+    }
+
+    // Post feed with privacy option + timestamps
+    function postFeed() {
+      const text = document.getElementById("postText").value.trim();
+      if (!text && !document.getElementById("postImage").files[0]) {
+        alert("Post can't be empty bro!");
+        return;
+      }
+      const image = document.getElementById("postImage").files[0];
+      const privacy = document.getElementById("postPrivacy").value;
+      const feed = document.getElementById("feed");
+      const postId = "post" + Date.now();
+      const timestamp = new Date();
+
+      const postDiv = document.createElement("div");
+      postDiv.classList.add("post");
+      postDiv.dataset.privacy = privacy;
+      postDiv.dataset.postId = postId;
+
+      postDiv.innerHTML = `
+        <div class="post-time">${formatDateTime(timestamp)}</div>
+        <p>${text}</p>
+        ${image ? `<img src="${URL.createObjectURL(image)}">` : ""}
+        <div class="reactions" data-id="${postId}">
+          <span onclick="react('${postId}', 'like')">👍 <span id="${postId}-like">0</span></span>
+          <span onclick="react('${postId}', 'heart')">❤️ <span id="${postId}-heart">0</span></span>
+          <span onclick="react('${postId}', 'fire')">🔥 <span id="${postId}-fire">0</span></span>
+        </div>
+        <div class="comment-section">
+          <input type="text" placeholder="Write a comment..." onkeypress="submitComment(event, '${postId}')">
+          <div class="comment-list" id="${postId}-comments"></div>
+        </div>
+        <button onclick="alert('Post shared!')">Share</button>
+      `;
+
+      feed.prepend(postDiv);
+      document.getElementById("postText").value = "";
+      document.getElementById("postImage").value = "";
+      incrementNotification();
+    }
+
+    // Reaction handler: 1 reaction max per post per user, toggleable
+    function react(postId, type) {
+      if (!userReactions[postId]) {
+        userReactions[postId] = null;
+      }
+
+      // If same reaction clicked, remove it
+      if (userReactions[postId] === type) {
+        const countSpan = document.getElementById(`${postId}-${type}`);
+        countSpan.textContent = +countSpan.textContent - 1;
+        userReactions[postId] = null;
+        return;
+      }
+
+      // Remove previous reaction count
+      if (userReactions[postId]) {
+        const prevCountSpan = document.getElementById(`${postId}-${userReactions[postId]}`);
+        prevCountSpan.textContent = +prevCountSpan.textContent - 1;
+      }
+
+      // Add new reaction count
+      const newCountSpan = document.getElementById(`${postId}-${type}`);
+      newCountSpan.textContent = +newCountSpan.textContent + 1;
+      userReactions[postId] = type;
+    }
+
+    // Comment submit on Enter + timestamp + notification
+    function submitComment(e, postId) {
+      if (e.key === "Enter") {
+        const input = e.target;
+        const commentText = input.value.trim();
+        if (commentText) {
+          const commentList = document.getElementById(`${postId}-comments`);
+          const comment = document.createElement("p");
+          const now = new Date();
+          comment.innerHTML = `<strong>${userProfile.name}</strong>: ${commentText} <span class="comment-time">${formatDateTime(now)}</span>`;
+          commentList.appendChild(comment);
+          input.value = "";
+          incrementNotification();
+        }
+      }
+    }
+
+    // Friend request send button
+    function sendFriendRequest(event, name) {
+      event.stopPropagation(); // prevent triggering openChat
+
+      if (friends.includes(name)) {
+        alert(`${name} is already your friend bro!`);
+        return;
+      }
+      if (friendRequests.includes(name)) {
+        alert(`Friend request to ${name} already sent.`);
+        return;
+      }
+      friendRequests.push(name);
+      alert(`Friend request sent to ${name}!`);
+
+      // Change button text and disable it
+      event.target.textContent = '⏳ Pending...';
+      event.target.disabled = true;
+
+      incrementNotification();
+    }
+
+    // Open chat popup with friend
+    function openChat(name, event) {
+      if(event) event.stopPropagation();
+      currentChatFriend = name;
+      const chatBox = document.getElementById('chatBox');
+      const chatHeader = document.getElementById('chatHeader');
+      const chatMessages = document.getElementById('chatMessages');
+      chatBox.style.display = 'flex';
+      chatHeader.textContent = `Chat with ${name} (click to close)`;
+
+      chatMessages.innerHTML = '';
+      if (messages[name]) {
+        messages[name].forEach(msg => {
+          const p = document.createElement('p');
+          p.textContent = msg;
+          chatMessages.appendChild(p);
+        });
+      }
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      chatHeader.onclick = () => {
+        chatBox.style.display = 'none';
+        currentChatFriend = null;
+      };
+
+      clearNotifications();
+    }
+
+    // Send message in chat popup + notification on new message if chat not open
+    function sendMessage() {
+      if (!currentChatFriend) {
+        alert('Open a chat first bro!');
+        return;
+      }
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      if (!messages[currentChatFriend]) messages[currentChatFriend] = [];
+      messages[currentChatFriend].push(`You: ${text}`);
+
+      const chatMessages = document.getElementById('chatMessages');
+      const p = document.createElement('p');
+      p.textContent = `You: ${text}`;
+      chatMessages.appendChild(p);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      input.value = '';
+
+      // Simulate reply after 1.5 seconds
+      setTimeout(() => {
+        const reply = `👾 ${currentChatFriend}: Got your message!`;
+        messages[currentChatFriend].push(reply);
+        const p2 = document.createElement('p');
+        p2.textContent = reply;
+        chatMessages.appendChild(p2);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Notify if chat is not open or friend changed
+        if (currentChatFriend !== currentChatFriend) {
+          incrementNotification();
+        }
+      }, 1500);
+    }
+
+    // Notification increment and display
+    function incrementNotification() {
+      notificationCount++;
+      updateNotificationCount();
+    }
+
+    function updateNotificationCount() {
+      const badge = document.getElementById('notificationCount');
+      if (notificationCount > 0) {
+        badge.style.display = 'inline-block';
+        badge.textContent = notificationCount;
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    // Clear notifications
+    function clearNotifications() {
+      notificationCount = 0;
+      updateNotificationCount();
+      alert('All notifications cleared!');
+    }
+
+    // Toggle friends' online status every 10 seconds for demo
+    setInterval(() => {
+      const friendsEls = document.querySelectorAll('.friends-list .friend .status-dot');
+      friendsEls.forEach(dot => {
+        if (dot.classList.contains('online')) {
+          dot.classList.replace('online', 'offline');
+        } else {
+          dot.classList.replace('offline', 'online');
+        }
+      });
+    }, 10000);
+  </script>
+</body>
+</html>

@@ -7,79 +7,59 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Poppins&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      color: #fff;
     }
-
-    .box {
-      background-color: rgba(0, 0, 0, 0.4);
+    .signup-container {
+      background: rgba(0, 0, 0, 0.4);
       padding: 40px;
       border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-      color: white;
       text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     }
-
     h2 {
       font-family: 'Press Start 2P', cursive;
       color: #ffeb3b;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       font-size: 20px;
     }
-
     input {
+      display: block;
+      width: 250px;
+      margin: 15px auto;
       padding: 10px;
-      width: 100%;
-      margin: 10px 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-
-    .btn {
-      padding: 12px 25px;
-      margin-top: 15px;
       border: none;
       border-radius: 10px;
-      font-weight: bold;
-      background-image: linear-gradient(315deg, #7b4397 0%, #dc2430 74%);
+    }
+    .btn {
+      background: linear-gradient(315deg, #7b4397 0%, #dc2430 74%);
       color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
+      font-weight: bold;
       transition: transform 0.2s ease;
     }
-
     .btn:hover {
       transform: scale(1.05);
-    }
-
-    a {
-      display: block;
-      margin-top: 15px;
-      color: #ffeb3b;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    a:hover {
-      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h2>📝 Sign up for Friendsy</h2>
-    <form>
-      <input type="text" placeholder="Username" required /><br />
-      <input type="email" placeholder="Email" required /><br />
-      <input type="password" placeholder="Password" required /><br />
-      <button type="submit" class="btn">Sign Up</button>
+  <div class="signup-container">
+    <h2>📝 Sign Up</h2>
+    <form action="#">
+      <input type="text" placeholder="Username" required />
+      <input type="email" placeholder="Email" required />
+      <input type="password" placeholder="Password" required />
+      <button class="btn">Sign Up</button>
     </form>
-    <a href="login.html">Already have an account? Log in</a>
   </div>
 </body>
 </html>

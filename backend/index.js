@@ -1,27 +1,34 @@
 const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-
 const app = express();
-const PORT = 5000;
+const PORT = 3000;
 
-app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-let posts = []; // In-memory for now
-let users = []; // Dummy users for profiles
+// Dummy user posts
+const posts = [
+  {
+    id: 1,
+    username: 'jay2k',
+    content: 'Hello Friendsy fam!',
+    timestamp: '2025-07-28T13:00:00Z'
+  },
+  {
+    id: 2,
+    username: 'coolguy123',
+    content: 'Just joined Friendsy 😎',
+    timestamp: '2025-07-28T13:30:00Z'
+  }
+];
 
 // Routes
-app.get('/api/posts', (req, res) => {
+app.get('/', (req, res) => {
+  res.send('Friendsy Backend is running!');
+});
+
+app.get('/posts', (req, res) => {
   res.json(posts);
 });
 
-app.post('/api/posts', (req, res) => {
-  const newPost = req.body;
-  posts.push(newPost);
-  res.status(201).json(newPost);
-});
-
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server is live at http://localhost:${PORT}`);
 });
